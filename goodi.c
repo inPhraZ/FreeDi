@@ -11,7 +11,7 @@ void print_usage(int exit_code)
 	exit(exit_code);
 }
 
-void error_handler(CURL *handler, int res)
+void curl_error_handler(CURL *handler, int res)
 {
 	fprintf(stderr, "Error: %s\n", curl_easy_strerror(res));
 	curl_easy_cleanup(handler);
@@ -27,6 +27,7 @@ int main(int argc, char *argv[])
 	int res;
 	CURL *handler;
 	handler = curl_easy_init();
+	
 	if (!handler){
 		fprintf(stderr, "Error: Something went wrong\n");
 		exit(2);
@@ -37,11 +38,11 @@ int main(int argc, char *argv[])
 
 	res = curl_easy_setopt(handler, CURLOPT_URL, url);
 	if (res != CURLE_OK)
-		error_handler(handler, res);
+		curl_error_handler(handler, res);
 
 	res = curl_easy_perform(handler);
 	if (res != CURLE_OK)
-		error_handler(handler, res);
+		curl_error_handler(handler, res);
 
 	curl_easy_cleanup(handler);
 
