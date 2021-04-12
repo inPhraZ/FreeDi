@@ -5,6 +5,11 @@
 
 #define API_URL		"https://api.dictionaryapi.dev/api/v2/entries/en_US/"
 
+struct data{
+	char *response;
+	size_t size;
+};
+
 void print_usage(int exit_code)
 {
 	printf("Usage:  goodi	[word]\n");
@@ -18,9 +23,21 @@ void curl_error_handler(CURL *handler, int res)
 	exit(2);
 }
 
-size_t write_callback(void *ptr, size_t size, size_t nmemb, void *userdata)
+size_t write_callback(void *data, size_t size, size_t nmemb, void *userdata)
 {
-	return size * nmemb;
+	size_t numread = size * nmemb;
+	struct data *d = (struct data *)userdata;
+
+	char *ptr = (char *)realloc(d->response, d->size + numread + 1);
+	if (!ptr)
+		return 0;
+	
+	d->response = ptr;
+	memcpy(&(d->response[d->size]), data, numread);
+	d->size += numread;
+	d->response[d->size] = 0;
+
+	return numread;
 }
 
 int main(int argc, char *argv[])
@@ -30,6 +47,11 @@ int main(int argc, char *argv[])
 
 	char url[1024];
 	int res;
+	struct data json = {
+		.response = NULL,
+		.size = 0
+	};
+
 	CURL *handler;
 	handler = curl_easy_init();
 	
@@ -46,6 +68,10 @@ int main(int argc, char *argv[])
 		curl_error_handler(handler, res);
 
 	res = curl_easy_setopt(handler, CURLOPT_WRITEFUNCTION, write_callback);
+	if (res != CURLE_OK)
+		curl_error_handler(handler, res);
+
+	res = curl_easy_setopt(handler, CURLOPT_WRITEDATA, (void *)&json);
 	if (res != CURLE_OK)
 		curl_error_handler(handler, res);
 
