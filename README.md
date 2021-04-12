@@ -1,6 +1,11 @@
 # GooDi
 A command line dictionary using Google's API
 
+
+#### Requirements: [libcurl](https://github.com/curl/curl)
+
+
+#### Example:
 ```console
 foo@bar:~$ goodi hello
 Word: hello
