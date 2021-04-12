@@ -19,4 +19,5 @@ Example: hello there, Katie!
 
 Synonyms: greeting, welcome, salutation, saluting, hailing, address, hello, hallo
 
+foo@bar:~$
 ```
