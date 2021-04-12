@@ -3,6 +3,8 @@
 #include <string.h>
 #include <curl/curl.h>
 
+#include "cJSON.h"
+
 #define API_URL		"https://api.dictionaryapi.dev/api/v2/entries/en_US/"
 
 struct data{
@@ -23,6 +25,17 @@ void curl_error_handler(CURL *handler, int res)
 	exit(2);
 }
 
+void json_error_handler()
+{
+	const char *error_ptr;
+	error_ptr = cJSON_GetErrorPtr();
+	if (error_ptr)
+		fprintf(stderr, "Error: %s\n", error_ptr);
+	else
+		fprintf(stderr, "Error: Something went wrong\n");
+	exit(1);
+}
+
 size_t write_callback(void *data, size_t size, size_t nmemb, void *userdata)
 {
 	size_t numread = size * nmemb;
@@ -38,6 +51,79 @@ size_t write_callback(void *data, size_t size, size_t nmemb, void *userdata)
 	d->response[d->size] = 0;
 
 	return numread;
+}
+
+void get_synonyms(cJSON *meaning)
+{
+	cJSON *definitions = cJSON_GetObjectItemCaseSensitive(meaning, "definitions");
+	cJSON *definition = cJSON_GetArrayItem(definitions, 0);
+	cJSON *synonyms = cJSON_GetObjectItemCaseSensitive(definition, "synonyms");
+	cJSON *syn;
+	int i = 0;
+	printf("Synonyms: ");
+	cJSON_ArrayForEach(syn, synonyms){
+		if (cJSON_IsString(syn) && (syn->valuestring != NULL)){
+			printf("%s", syn->valuestring);
+			if (i != cJSON_GetArraySize(synonyms) - 1)	printf(", ");
+		}
+		i++;
+	}
+	printf("\n\n");
+}
+
+void get_definitions(cJSON *meaning)
+{
+	cJSON *definitions = cJSON_GetObjectItemCaseSensitive(meaning, "definitions");
+	cJSON *definition;
+	cJSON_ArrayForEach(definition, definitions){
+		cJSON *def = cJSON_GetObjectItemCaseSensitive(definition, "definition");
+		if (cJSON_IsString(def) && (def->valuestring != NULL)){
+			printf("--> %s\n", def->valuestring);
+		}
+		cJSON *example = cJSON_GetObjectItemCaseSensitive(definition, "example");
+		if (cJSON_IsString(example) && (example->valuestring != NULL)){
+			printf("Example: %s\n", example->valuestring);
+		}
+	}
+
+	printf("\n");
+}
+
+void get_meanings(cJSON *object)
+{
+	cJSON *meanings = cJSON_GetObjectItemCaseSensitive(object, "meanings");
+	cJSON *meaning = cJSON_GetArrayItem(meanings, 0);
+	cJSON *copy = meaning;
+	printf("\n");
+	cJSON_ArrayForEach(meaning, meanings){
+		cJSON *pos = cJSON_GetObjectItemCaseSensitive(meaning, "partOfSpeech");
+			if (cJSON_IsString(pos) && (pos->valuestring != NULL)){
+				printf("(%s)\n", pos->valuestring);
+			}
+			get_definitions(meaning);
+	}
+	get_synonyms(copy);
+}
+
+void parse_json(struct data *json_data)
+{
+	cJSON *array;
+
+	array = cJSON_Parse(json_data->response);
+	if (cJSON_IsArray(array)){
+		cJSON *object = cJSON_GetArrayItem(array, 0);
+		cJSON *word = cJSON_GetObjectItemCaseSensitive(object, "word");
+		if (cJSON_IsString(word) && (word->valuestring != NULL))
+			printf("Word: %s\n", word->valuestring);
+		get_meanings(object);
+	}
+	else{
+		cJSON *title = cJSON_GetObjectItemCaseSensitive(array, "title");
+		if (cJSON_IsString(title) && (title->valuestring != NULL))
+			printf("%s\n", title->valuestring);
+		else
+			fprintf(stderr, "Invalid response!\n");
+	}
 }
 
 int main(int argc, char *argv[])
@@ -80,6 +166,8 @@ int main(int argc, char *argv[])
 		curl_error_handler(handler, res);
 
 	curl_easy_cleanup(handler);
+
+	parse_json(&json);
 
 	return 0;
 }
