@@ -110,6 +110,8 @@ void parse_json(struct data *json_data)
 	cJSON *array;
 
 	array = cJSON_Parse(json_data->response);
+	if (!array)
+		json_error_handler();
 	if (cJSON_IsArray(array)){
 		cJSON *object = cJSON_GetArrayItem(array, 0);
 		cJSON *word = cJSON_GetObjectItemCaseSensitive(object, "word");
@@ -124,6 +126,8 @@ void parse_json(struct data *json_data)
 		else
 			fprintf(stderr, "Invalid response!\n");
 	}
+
+	cJSON_Delete(array);
 }
 
 int main(int argc, char *argv[])
