@@ -7,6 +7,9 @@
 
 #define API_URL		"https://api.dictionaryapi.dev/api/v2/entries/en_US/"
 
+#define MAX_LANG	6
+#define MAX_WORD	50
+
 static const char *languages[] = {
 	"en_US",
 	"en_GB",
@@ -138,11 +141,42 @@ void parse_json(struct data *json_data)
 	cJSON_Delete(array);
 }
 
+void parse_arguments(int argc, char **argv, char *word, char *lang)
+{
+	int c;
+	struct option long_options[] = {
+		{"help", no_argument, 0, 'h'},
+		{"language", required_argument, 0, 'l'},
+		{0, 0, 0, 0}
+	};
+
+	while((c = getopt_long(argc, argv, "hl:", long_options, NULL)) != -1){
+		switch(c){
+			case 'h':
+				print_usage(0);
+				break;
+			case 'l':
+				break;
+			default:
+				break;
+		}
+	}
+}
+
 int main(int argc, char *argv[])
 {
 	if (argc == 1)
 		print_usage(1);
 
+	char lang[MAX_LANG];
+	char word[MAX_WORD];
+
+	memset(lang, 0, MAX_LANG);
+	memset(word, 0, MAX_WORD);
+
+	parse_arguments(argc, argv, word, lang);
+
+#if 0
 	char url[1024];
 	int res;
 	struct data json = {
@@ -180,6 +214,8 @@ int main(int argc, char *argv[])
 	curl_easy_cleanup(handler);
 
 	parse_json(&json);
+
+#endif
 
 	return 0;
 }
