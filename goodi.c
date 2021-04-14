@@ -1,14 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <getopt.h>
 #include <curl/curl.h>
 
 #include "cJSON.h"
 
 #define API_URL		"https://api.dictionaryapi.dev/api/v2/entries/en_US/"
 
+#define NUM_LANG	5
 #define MAX_LANG	6
 #define MAX_WORD	50
+#define URL_LEN		100
 
 static const char *languages[] = {
 	"en_US",
@@ -141,6 +144,16 @@ void parse_json(struct data *json_data)
 	cJSON_Delete(array);
 }
 
+int validate_language(const char *lang)
+{
+	int i;
+	for (i = 0; i < NUM_LANG; ++i){
+		if (strncmp(lang, languages[i], MAX_LANG) == 0)
+			return 1;
+	}
+	return 0;
+}
+
 void parse_arguments(int argc, char **argv, char *word, char *lang)
 {
 	int c;
@@ -156,11 +169,18 @@ void parse_arguments(int argc, char **argv, char *word, char *lang)
 				print_usage(0);
 				break;
 			case 'l':
+				if (validate_language(optarg))
+					strncpy(lang, optarg, MAX_LANG);
+				else{
+					fprintf(stderr, "Invalid language: %s\n", optarg);
+					strncpy(lang, "en_US", MAX_LANG);
+				}
 				break;
 			default:
 				break;
 		}
 	}
+	strncpy(word, argv[optind], MAX_LANG);
 }
 
 int main(int argc, char *argv[])
@@ -170,14 +190,15 @@ int main(int argc, char *argv[])
 
 	char lang[MAX_LANG];
 	char word[MAX_WORD];
+	char url[URL_LEN];
 
 	memset(lang, 0, MAX_LANG);
 	memset(word, 0, MAX_WORD);
+	memset(url, 0, URL_LEN);
 
 	parse_arguments(argc, argv, word, lang);
 
 #if 0
-	char url[1024];
 	int res;
 	struct data json = {
 		.response = NULL,
