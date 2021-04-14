@@ -1,5 +1,5 @@
 # GooDi
-A command line dictionary using Google's API
+A command line dictionary using (unofficial) Google Dictionary API
 
 
 #### Requirements: [libcurl](https://github.com/curl/curl)
