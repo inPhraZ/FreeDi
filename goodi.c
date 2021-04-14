@@ -7,6 +7,14 @@
 
 #define API_URL		"https://api.dictionaryapi.dev/api/v2/entries/en_US/"
 
+static const char *languages[] = {
+	"en_US",
+	"en_GB",
+	"de",
+	"fr",
+	"it"
+};
+
 struct data{
 	char *response;
 	size_t size;
