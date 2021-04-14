@@ -28,7 +28,19 @@ struct data{
 
 void print_usage(int exit_code)
 {
-	printf("Usage:  goodi	[word]\n");
+	printf("Usage:  goodi   [OPTION]   [WORD]\n\n");
+	printf("Options:\n");
+	printf("-h, --help        display this help and exit\n");
+	printf("-l, --language    language selection\n\n");
+	printf("Supported languages:\n");
+	printf("en_US              English(US)\n");
+	printf("en_GB              English(UK)\n");
+	printf("de                 German\n");
+	printf("fr                 French\n");
+	printf("it                 Italian\n");
+
+	printf("\nExample:  goodi  -l de hallo\n");
+
 	exit(exit_code);
 }
 
