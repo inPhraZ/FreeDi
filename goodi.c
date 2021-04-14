@@ -1,11 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <getopt.h>
 #include <curl/curl.h>
 
 #include "cJSON.h"
 
-#define API_URL		"https://api.dictionaryapi.dev/api/v2/entries/en_US/"
+#define API_URL		"https://api.dictionaryapi.dev/api/v2/entries/"
+
+#define NUM_LANG	5
+#define MAX_LANG	7
+#define MAX_WORD	50
+#define URL_LEN		100
+
+static const char *languages[] = {
+	"en_US",
+	"en_GB",
+	"de",
+	"fr",
+	"it"
+};
 
 struct data{
 	char *response;
@@ -130,12 +144,76 @@ void parse_json(struct data *json_data)
 	cJSON_Delete(array);
 }
 
+int validate_language(const char *lang)
+{
+	int i;
+	for (i = 0; i < NUM_LANG; ++i){
+		if (strncmp(lang, languages[i], MAX_LANG) == 0)
+			return 1;
+	}
+	return 0;
+}
+
+void parse_arguments(int argc, char **argv, char *word, char *lang)
+{
+	int c;
+	struct option long_options[] = {
+		{"help", no_argument, 0, 'h'},
+		{"language", required_argument, 0, 'l'},
+		{0, 0, 0, 0}
+	};
+
+	while((c = getopt_long(argc, argv, "hl:", long_options, NULL)) != -1){
+		switch(c){
+			case 'h':
+				print_usage(0);
+				break;
+			case 'l':
+				if (validate_language(optarg))
+					strncpy(lang, optarg, MAX_LANG);
+				else{
+					fprintf(stderr, "Invalid language: %s\n", optarg);
+					strncpy(lang, "en_US", MAX_LANG);
+				}
+				break;
+			default:
+				break;
+		}
+	}
+	if (argv[optind])
+		strncpy(word, argv[optind], MAX_LANG);
+	else{
+		fprintf(stderr, "No words found\n\n");
+		print_usage(1);
+	}
+}
+
+void final_url(char *url, const char *word, const char *lang)
+{
+	strncpy(url, API_URL, URL_LEN);
+	strncat(url, lang, MAX_LANG);
+	strncat(url, word, MAX_WORD);
+}
+
 int main(int argc, char *argv[])
 {
 	if (argc == 1)
 		print_usage(1);
 
-	char url[1024];
+	char lang[MAX_LANG];
+	char word[MAX_WORD];
+	char url[URL_LEN];
+
+	memset(lang, 0, MAX_LANG);
+	memset(word, 0, MAX_WORD);
+	memset(url, 0, URL_LEN);
+
+	parse_arguments(argc, argv, word, lang);
+
+	if (strncmp(lang, "", 1) != 0)
+		strncat(lang, "/", 2);
+	final_url(url, word, lang);
+
 	int res;
 	struct data json = {
 		.response = NULL,
@@ -149,9 +227,6 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "Error: Something went wrong\n");
 		exit(2);
 	}
-
-	strcpy(url, API_URL);
-	strcat(url, argv[1]);
 
 	res = curl_easy_setopt(handler, CURLOPT_URL, url);
 	if (res != CURLE_OK)
