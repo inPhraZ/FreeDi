@@ -6,10 +6,10 @@
 
 #include "cJSON.h"
 
-#define API_URL		"https://api.dictionaryapi.dev/api/v2/entries/en_US/"
+#define API_URL		"https://api.dictionaryapi.dev/api/v2/entries/"
 
 #define NUM_LANG	5
-#define MAX_LANG	6
+#define MAX_LANG	7
 #define MAX_WORD	50
 #define URL_LEN		100
 
@@ -180,7 +180,19 @@ void parse_arguments(int argc, char **argv, char *word, char *lang)
 				break;
 		}
 	}
-	strncpy(word, argv[optind], MAX_LANG);
+	if (argv[optind])
+		strncpy(word, argv[optind], MAX_LANG);
+	else{
+		fprintf(stderr, "No words found\n\n");
+		print_usage(1);
+	}
+}
+
+void final_url(char *url, const char *word, const char *lang)
+{
+	strncpy(url, API_URL, URL_LEN);
+	strncat(url, lang, MAX_LANG);
+	strncat(url, word, MAX_WORD);
 }
 
 int main(int argc, char *argv[])
@@ -198,7 +210,10 @@ int main(int argc, char *argv[])
 
 	parse_arguments(argc, argv, word, lang);
 
-#if 0
+	if (strncmp(lang, "", 1) != 0)
+		strncat(lang, "/", 2);
+	final_url(url, word, lang);
+
 	int res;
 	struct data json = {
 		.response = NULL,
@@ -212,9 +227,6 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "Error: Something went wrong\n");
 		exit(2);
 	}
-
-	strcpy(url, API_URL);
-	strcat(url, argv[1]);
 
 	res = curl_easy_setopt(handler, CURLOPT_URL, url);
 	if (res != CURLE_OK)
@@ -235,8 +247,6 @@ int main(int argc, char *argv[])
 	curl_easy_cleanup(handler);
 
 	parse_json(&json);
-
-#endif
 
 	return 0;
 }
