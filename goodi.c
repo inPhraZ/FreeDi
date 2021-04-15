@@ -185,7 +185,6 @@ void parse_arguments(int argc, char **argv, char *word, char *lang)
 					strncpy(lang, optarg, MAX_LANG);
 				else{
 					fprintf(stderr, "Invalid language: %s\n", optarg);
-					strncpy(lang, "en_US", MAX_LANG);
 				}
 				break;
 			default:
@@ -200,9 +199,10 @@ void parse_arguments(int argc, char **argv, char *word, char *lang)
 	}
 }
 
-void final_url(char *url, const char *word, const char *lang)
+void final_url(char *url, const char *word, char *lang)
 {
 	strncpy(url, API_URL, URL_LEN);
+	strncat(lang, "/", 2);
 	strncat(url, lang, MAX_LANG);
 	strncat(url, word, MAX_WORD);
 }
@@ -222,8 +222,9 @@ int main(int argc, char *argv[])
 
 	parse_arguments(argc, argv, word, lang);
 
-	if (strncmp(lang, "", 1) != 0)
-		strncat(lang, "/", 2);
+	if (strncmp(lang, "", 1) == 0)
+		strncpy(lang, "en_US", MAX_LANG);
+
 	final_url(url, word, lang);
 
 	int res;
