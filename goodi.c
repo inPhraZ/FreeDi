@@ -28,7 +28,9 @@ struct data{
 
 void print_usage(int exit_code)
 {
-	printf("Usage:  goodi   [OPTION]   [WORD]\n\n");
+	printf("Usage:  goodi   [OPTION]   [WORD]\n");
+	printf("List information about the WORD. (part of speech, definition, example, synonyms)\n");
+	printf("If no language is specified, en_US is the default\n\n");
 	printf("Options:\n");
 	printf("-h, --help        display this help and exit\n");
 	printf("-l, --language    language selection\n\n");
