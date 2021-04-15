@@ -194,7 +194,7 @@ void parse_arguments(int argc, char **argv, char *word, char *lang)
 		}
 	}
 	if (argv[optind])
-		strncpy(word, argv[optind], MAX_LANG);
+		strncpy(word, argv[optind], MAX_WORD);
 	else{
 		fprintf(stderr, "No words found\n\n");
 		print_usage(1);
