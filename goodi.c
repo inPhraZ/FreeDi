@@ -28,7 +28,7 @@ struct data{
 
 void print_usage(int exit_code)
 {
-	printf("Usage:  goodi   [OPTION]   [WORD]\n");
+	printf("\nUsage:  goodi   [OPTION]   [WORD]\n");
 	printf("List information about the WORD. (part of speech, definition, example, synonyms)\n");
 	printf("If no language is specified, en_US is the default\n\n");
 	printf("Options:\n");
@@ -41,7 +41,7 @@ void print_usage(int exit_code)
 	printf("fr                 French\n");
 	printf("it                 Italian\n");
 
-	printf("\nExample:  goodi  -l de hallo\n");
+	printf("\nExample:  goodi  -l de hallo\n\n");
 
 	exit(exit_code);
 }
@@ -185,11 +185,11 @@ void parse_arguments(int argc, char **argv, char *word, char *lang)
 			case 'l':
 				if (validate_language(optarg))
 					strncpy(lang, optarg, MAX_LANG);
-				else{
+				else
 					fprintf(stderr, "Invalid language: %s\n", optarg);
-				}
 				break;
 			default:
+				print_usage(1);
 				break;
 		}
 	}
