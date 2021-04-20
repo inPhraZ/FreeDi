@@ -1,6 +1,6 @@
 
-# Created by https://www.toptal.com/developers/gitignore/api/c,vim,cmake
-# Edit at https://www.toptal.com/developers/gitignore?templates=c,vim,cmake
+# Created by https://www.toptal.com/developers/gitignore/api/c,vim,cmake,executable
+# Edit at https://www.toptal.com/developers/gitignore?templates=c,vim,cmake,executable
 
 ### C ###
 # Prerequisites
@@ -74,6 +74,16 @@ CMakeUserPresets.json
 # External projects
 *-prefix/
 
+### Executable ###
+*.bat
+*.cgi
+*.com
+*.gadget
+*.jar
+*.pif
+*.vb
+*.wsf
+
 ### Vim ###
 # Swap
 [._]*.s[a-v][a-z]
@@ -95,4 +105,4 @@ tags
 # Persistent undo
 [._]*.un~
 
-# End of https://www.toptal.com/developers/gitignore/api/c,vim,cmake
+# End of https://www.toptal.com/developers/gitignore/api/c,vim,cmake,executable
