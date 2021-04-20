@@ -35,7 +35,7 @@ void print_usage(int exit_code)
 	printf("-h, --help        display this help and exit\n");
 	printf("-l, --language    language selection\n\n");
 	printf("Supported languages:\n");
-	printf("en_US              English(US)\n");
+	printf("en_US              English(US) (default)\n");
 	printf("en_GB              English(UK)\n");
 	printf("de                 German\n");
 	printf("fr                 French\n");
