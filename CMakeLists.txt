@@ -13,4 +13,6 @@ endif(CURL_FOUND)
 
 add_executable(goodi goodi.c cJSON.c cJSON.h)
 
+target_link_libraries(goodi ${CURL_LIBRARIES})
+
 target_include_directories(goodi PUBLIC "${PROJECT_BINARY_DIR}")
