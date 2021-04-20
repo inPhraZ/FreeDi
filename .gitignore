@@ -1,6 +1,6 @@
 
-# Created by https://www.toptal.com/developers/gitignore/api/c,vim
-# Edit at https://www.toptal.com/developers/gitignore?templates=c,vim
+# Created by https://www.toptal.com/developers/gitignore/api/c,vim,cmake
+# Edit at https://www.toptal.com/developers/gitignore?templates=c,vim,cmake
 
 ### C ###
 # Prerequisites
@@ -56,6 +56,24 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
+### CMake ###
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+CMakeUserPresets.json
+
+### CMake Patch ###
+# External projects
+*-prefix/
+
 ### Vim ###
 # Swap
 [._]*.s[a-v][a-z]
@@ -77,4 +95,4 @@ tags
 # Persistent undo
 [._]*.un~
 
-# End of https://www.toptal.com/developers/gitignore/api/c,vim
+# End of https://www.toptal.com/developers/gitignore/api/c,vim,cmake
