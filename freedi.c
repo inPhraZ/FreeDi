@@ -28,7 +28,7 @@ struct data{
 
 void print_usage(int exit_code)
 {
-	printf("\nUsage:  goodi   [OPTION]   [WORD]\n");
+	printf("\nUsage:  freedi   [OPTION]   [WORD]\n");
 	printf("List information about the WORD. (part of speech, definition, example, synonyms)\n");
 	printf("If no language is specified, en_US is the default\n\n");
 	printf("Options:\n");
@@ -41,7 +41,7 @@ void print_usage(int exit_code)
 	printf("fr                 French\n");
 	printf("it                 Italian\n");
 
-	printf("\nExample:  goodi  -l de hallo\n\n");
+	printf("\nExample:  freedi  -l de hallo\n\n");
 
 	exit(exit_code);
 }
