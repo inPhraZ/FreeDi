@@ -1,5 +1,5 @@
-# GooDi
-A command line dictionary using (unofficial) [Google Dictionary API](https://github.com/meetDeveloper/googleDictionaryAPI.git)
+# FreeDi
+A command line dictionary using [freeDictionaryAPI](https://github.com/meetDeveloper/googleDictionaryAPI.git)
 
 
 #### Requirements: [libcurl](https://github.com/curl/curl)
@@ -7,7 +7,7 @@ A command line dictionary using (unofficial) [Google Dictionary API](https://git
 
 #### Example:
 ```console
-foo@bar:~$ goodi hello
+foo@bar:~$ freedi hello
 Word: hello
 
 (noun)
